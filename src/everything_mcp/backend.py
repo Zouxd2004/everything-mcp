@@ -183,7 +183,11 @@ class EverythingBackend:
         # NOTE: We intentionally omit -size / -dm / -dc.  Keeping es.exe
         # output as plain one-path-per-line makes parsing trivial and
         # version-independent.  Metadata comes from os.stat() below.
-        cmd.append(query)
+        #
+        # Split query into separate args so es.exe treats spaces as AND
+        # operators.  A single quoted arg like "dm:today ext:md" would be
+        # searched as a literal string and return 0 results.
+        cmd.extend(query.split())
 
         stdout, stderr, rc = await self._run(cmd)
 
